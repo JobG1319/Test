@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Water Quality Monitoring System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #a2d4f2;
+      --text-color: #333;
+      --card-bg: #fff;
+      --nav-bg: #fff;
+      --button-bg: #008080;
+      --active-color: #00bfff;
+      --title-color: #0077cc;
+      --led-good: #4caf50;
+      --led-bad: #f44336;
+      --text-on-led: #fff;
+      --card-border: #ddd;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #eee;
+      --card-bg: #1e1e1e;
+      --nav-bg: #1e1e1e;
+      --button-bg: #333;
+      --active-color: #80cbc4;
+      --title-color: #4fc3f7;
+      --card-border: #555;
+      --shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      font-family: 'Roboto Slab', serif;
+      background: linear-gradient(90deg, #E0FFFF, #2196f3);
+      color: #FFF;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      position: relative;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    header::before {
+      content: url('https://img.icons8.com/fluency/48/water.png');
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    .mode-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      background: var(--button-bg);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow);
+      transition: background 0.3s;
+    }
+
+    .mode-toggle:hover {
+      background: var(--active-color);
+    }
+
+    .content {
+      padding: 1.5rem;
+      min-height: 75vh;
+    }
+
+    .leds {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .led {
+      width: 150px;
+      height: 50px;
+      border-radius: 30px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-on-led);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+    }
+
+    .led.green {
+      background: var(--led-good);
+    }
+
+    .led.red {
+      background: var(--led-bad);
+    }
+
+    .led:hover {
+      transform: scale(1.05);
+    }
+
+    .data {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .data div {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+    }
+
+    .data div:hover {
+      transform: translateY(-5px);
+    }
+
+    .chart-container {
+      margin-top: 2rem;
+      font-size: 1rem;
+      text-align: center;
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    nav {
+      background: var(--nav-bg);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.8rem 0;
+      position: sticky;
+      bottom: 0;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+
+    nav button {
+      background: var(--button-bg);
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    nav button.active,
+    nav button:hover {
+      background: var(--active-color);
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--title-color);
+      margin-bottom: 1rem;
+    }
+
+    .note-box {
+      background: var(--card-bg);
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      font-size: 1rem;
+      box-shadow: var(--shadow);
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .led {
+        width: 100%;
+        height: auto;
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body class="dark">
+  <header>
+    Smart Water Quality Monitoring System
+    <button class="mode-toggle" onclick="toggleMode()">☀️/🌙</button>
+  </header>
+  <div class="content">
+    <section id="dashboard" class="active">
+      <div class="leds">
+        <div id="ledDrinkGood" class="led">Drinking ✅</div>
+        <div id="ledDrinkBad" class="led">Drinking ❌</div>
+        <div id="ledCleanGood" class="led">Cleaning ✅</div>
+        <div id="ledCleanBad" class="led">Cleaning ❌</div>
+        <div id="ledAgriGood" class="led">Agri ✅</div>
+        <div id="ledAgriBad" class="led">Agri ❌</div>
+      </div>
+      <div class="data">
+        <div><h3>TDS</h3><p id="tds">--</p>ppm</div>
+        <div><h3>pH</h3><p id="ph">--</p></div>
+        <div><h3>Turbidity</h3><p id="turbidity">--</p>NTU</div>
+        <div><h3>Temperature</h3><p id="temp">--</p>°C</div>
+      </div>
+      <div class="chart-container" id="suggestionBox">
+        <p><strong>Water Quality Suggestion:</strong> Evaluating...</p>
+      </div>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+      <p>View data on ThingSpeak: <a href="https://thingspeak.com/channels/2903916" target="_blank" style="color: teal;">Open Channel</a></p>
+    </section>
+
+    <section id="settings">
+      <h2>Settings</h2>
+      <p>Settings coming soon...</p>
+    </section>
+
+    <section id="about">
+      <h2>About</h2>
+      <p>This dashboard monitors water quality in real-time using sensors and ESP32, sending data to ThingSpeak cloud.</p>
+    </section>
+
+    <section id="notes">
+      <h2>Usage Notes</h2>
+      <div class="note-box">
+        <p><strong>✅ Drinking water:</strong> TDS ≤ 500 ppm, pH 6.5–8.5, turbidity ≤ 5 NTU</p>
+        <p><strong>✅ Cleaning:</strong> TDS ≤ 1000 ppm, pH 6–9, turbidity ≤ 50 NTU</p>
+        <p><strong>✅ Agriculture:</strong> TDS ≤ 2000 ppm, pH 6–8.5, turbidity ≤ 100 NTU</p>
+        <p>If outside these ranges, water is not recommended for the respective use.</p>
+      </div>
+    </section>
+  </div>
+
+  <nav>
+    <button onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+    <button onclick="showPage('history')"><i class="fas fa-history"></i> History</button>
+    <button onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</button>
+    <button onclick="showPage('about')"><i class="fas fa-info-circle"></i> About</button>
+    <button onclick="showPage('notes')"><i class="fas fa-book-open"></i> Notes</button>
+  </nav>
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      [...document.querySelectorAll('nav button')].find(b => b.textContent.trim().toLowerCase().includes(id)).classList.add('active');
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    async function fetchData() {
+      try {
+        let res = await fetch('https://api.thingspeak.com/channels/2903916/feeds.json?results=10');
+        let json = await res.json();
+        if (!json.feeds || json.feeds.length === 0) return;
+        let latest = json.feeds[json.feeds.length - 1];
+
+        let tds = parseFloat(latest.field1 || 0);
+        let ph = parseFloat(latest.field2 || 0);
+        let turb = parseFloat(latest.field3 || 0);
+        let temp = parseFloat(latest.field4 || 0);
+
+        document.getElementById('tds').textContent = tds.toFixed(2);
+        document.getElementById('ph').textContent = ph.toFixed(2);
+        document.getElementById('turbidity').textContent = turb.toFixed(2);
+        document.getElementById('temp').textContent = temp.toFixed(2);
+
+        let drinkGood = tds <= 500 && ph >= 6.5 && ph <= 8.5 && turb <= 5 && temp >= 10 && temp <= 30;
+        let cleanGood = tds <= 1000 && ph >= 6 && ph <= 9 && turb <= 50 && temp >= 10 && temp <= 40;
+        let agriGood = tds <= 2000 && ph >= 6 && ph <= 8.5 && turb <= 100 && temp >= 5 && temp <= 45;
+
+        ['ledDrinkGood','ledCleanGood','ledAgriGood','ledDrinkBad','ledCleanBad','ledAgriBad'].forEach(id => {
+          document.getElementById(id).classList.remove('green', 'red');
+        });
+
+        document.getElementById(drinkGood ? 'ledDrinkGood' : 'ledDrinkBad').classList.add(drinkGood ? 'green' : 'red');
+        document.getElementById(cleanGood ? 'ledCleanGood' : 'ledCleanBad').classList.add(cleanGood ? 'green' : 'red');
+        document.getElementById(agriGood ? 'ledAgriGood' : 'ledAgriBad').classList.add(agriGood ? 'green' : 'red');
+
+        let good = [], bad = [];
+        if (drinkGood) good.push('Drinking'); else bad.push('Drinking');
+        if (cleanGood) good.push('Cleaning'); else bad.push('Cleaning');
+        if (agriGood) good.push('Agricultural use'); else bad.push('Agricultural use');
+
+        document.getElementById('suggestionBox').innerHTML = `<p><strong>Water Quality Suggestion:</strong><br><span style="color:limegreen">✔ Suitable for: ${good.join(', ')}</span><br><span style="color:red">✖ Not suitable for: ${bad.join(', ')}</span></p>`;
+      } catch (e) {
+        console.error('Fetch error:', e);
+      }
+    }
+
+    fetchData();
+    setInterval(fetchData, 10000);
+  </script>
+</body>
+</html>
