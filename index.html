@@ -16,7 +16,7 @@
       --nav-bg: #fff;
       --button-bg: #008080;
       --active-color: #00bfff;
-      --title-color: #0077cc;
+      --title-color: #333;
       --led-good: #4caf50;
       --led-bad: #f44336;
       --text-on-led: #fff;
@@ -34,6 +34,9 @@
       --title-color: #4fc3f7;
       --card-border: #555;
       --shadow: 0 4px 12px rgba(0,0,0,0.3);
+      --form-bg: #2a2a2a;
+      --input-border: #666;
+      --button-text: #eee;
     }
 
     body {
@@ -83,6 +86,89 @@
     }
 
     .content {
+      padding: 1.5rem;
+      min-height: 75vh;
+    }
+
+    section {
+      display: none;
+      
+    }
+
+    section.active {
+      display: block;
+    }
+
+    /* Auth Forms Styling */
+    .auth-container {
+      background: var(--form-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 400px; /* Max width for auth forms */
+      margin: 2rem auto; /* Center the auth forms */
+    }
+
+    .auth-container h2 {
+      text-align: center;
+      color: var(--title-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-container label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .auth-container input[type="text"],
+    .auth-container input[type="email"],
+    .auth-container input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      box-sizing: border-box; /* Include padding and border in element's total width */
+      background: var(--card-bg); /* Use card background for input */
+      color: var(--text-color); /* Use text color for input text */
+    }
+
+    .auth-container button {
+      width: 100%;
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      padding: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    .auth-container button:hover {
+      background: var(--active-color);
+    }
+
+    .auth-container .switch-form {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .auth-container .switch-form a {
+      color: var(--title-color);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .auth-container .switch-form a:hover {
+      text-decoration: underline;
+    }
+
+	.content {
       padding: 1.5rem;
       min-height: 75vh;
     }
@@ -153,6 +239,7 @@
     nav {
       background: var(--nav-bg);
       display: flex;
+	  flex-wrap: wrap;
       justify-content: space-around;
       padding: 0.8rem 0;
       position: sticky;
@@ -160,6 +247,7 @@
       box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
       border-top-left-radius: 20px;
       border-top-right-radius: 20px;
+      margin-top: auto; /* Push nav to the bottom */
     }
 
     nav button {
@@ -179,14 +267,6 @@
     nav button.active,
     nav button:hover {
       background: var(--active-color);
-    }
-
-    section {
-      display: none;
-    }
-
-    section.active {
-      display: block;
     }
 
     h2 {
@@ -211,6 +291,9 @@
         height: auto;
         padding: 0.75rem;
       }
+      .auth-container {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -220,7 +303,56 @@
     <button class="mode-toggle" onclick="toggleMode()">☀️/🌙</button>
   </header>
   <div class="content">
-    <section id="dashboard" class="active">
+
+    <section id="login" class="active">
+      <div class="auth-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+          <div>
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" required>
+          </div>
+          <div>
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit">Login</button>
+          <div class="switch-form">
+            Don't have an account? <a href="#" onclick="showAuthForm('register')">Register here</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="register">
+      <div class="auth-container">
+        <h2>Register</h2>
+        <form id="registerForm">
+           <div>
+            <label for="registerUsername">Username:</label>
+            <input type="text" id="registerUsername" required>
+          </div>
+          <div>
+            <label for="registerEmail">Email:</label>
+            <input type="email" id="registerEmail" required>
+          </div>
+          <div>
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" required>
+          </div>
+          <div>
+            <label for="registerConfirmPassword">Confirm Password:</label>
+            <input type="password" id="registerConfirmPassword" required>
+          </div>
+          <button type="submit">Register</button>
+          <div class="switch-form">
+            Already have an account? <a href="#" onclick="showAuthForm('login')">Login here</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="dashboard">
       <div class="leds">
         <div id="ledDrinkGood" class="led">Drinking ✅</div>
         <div id="ledDrinkBad" class="led">Drinking ❌</div>
@@ -248,6 +380,7 @@
     <section id="settings">
       <h2>Settings</h2>
       <p>Settings coming soon...</p>
+    </p>
     </section>
 
     <section id="about">
@@ -266,7 +399,7 @@
     </section>
   </div>
 
-  <nav>
+  <nav id="mainNav" style="display: none;">
     <button onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
     <button onclick="showPage('history')"><i class="fas fa-history"></i> History</button>
     <button onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</button>
@@ -275,17 +408,89 @@
   </nav>
 
   <script>
-    function showPage(id) {
+    // Hardcoded user credentials for simulation
+    const HARDCODED_EMAIL = "test@example.com";
+    const HARDCODED_PASSWORD = "password123";
+
+    // Function to show a specific section and hide others
+    function showSection(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+    }
+
+    // Function to show either the login or register form
+    function showAuthForm(formId) {
+      showSection(formId);
+      // Hide the main navigation when showing auth forms
+      document.getElementById('mainNav').style.display = 'none';
+      // Ensure dashboard data fetching is stopped when logged out
+      clearInterval(fetchInterval);
+    }
+
+    // Function to show a main page (dashboard, history, etc.)
+    function showPage(id) {
+      showSection(id);
+      // Activate the corresponding button in the navigation
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       [...document.querySelectorAll('nav button')].find(b => b.textContent.trim().toLowerCase().includes(id)).classList.add('active');
     }
 
+    // Function to toggle dark mode
     function toggleMode() {
       document.body.classList.toggle('dark');
     }
 
+    // Simulate login success and show the dashboard
+    function simulateLogin() {
+      showPage('dashboard'); // Show the dashboard
+      document.getElementById('mainNav').style.display = 'flex'; // Show the navigation
+      fetchData(); // Fetch initial data
+      fetchInterval = setInterval(fetchData, 10000); // Start fetching data periodically
+    }
+
+    // Handle Login Form Submission (Simulated with hardcoded data)
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent actual form submission
+
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      // Check credentials against hardcoded values
+      if (email === HARDCODED_EMAIL && password === HARDCODED_PASSWORD) {
+        console.log('Login successful!');
+        simulateLogin(); // Proceed to the dashboard
+      } else {
+        console.log('Login failed: Invalid credentials');
+        alert('Invalid email or password.'); // Provide feedback to the user
+      }
+    });
+
+    // Handle Register Form Submission (Simulated)
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent actual form submission
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!'); // Use alert for simplicity in this example
+        return;
+      }
+
+      // In a real app, you would send data to a server for registration
+      console.log('Register Attempt:', {
+        username: document.getElementById('registerUsername').value,
+        email: document.getElementById('registerEmail').value,
+        password: password
+      });
+      // Simulate successful registration and then login
+      alert('Registration successful! Please login with your new credentials.'); // Use alert for simplicity
+      showAuthForm('login'); // Show the login form after registration
+    });
+
+
+    let fetchInterval; // Variable to store the interval ID
+
+    // Function to fetch data from ThingSpeak
     async function fetchData() {
       try {
         let res = await fetch('https://api.thingspeak.com/channels/2903916/feeds.json?results=10');
@@ -303,6 +508,7 @@
         document.getElementById('turbidity').textContent = turb.toFixed(2);
         document.getElementById('temp').textContent = temp.toFixed(2);
 
+        // Note: Temperature ranges added for suggestion logic
         let drinkGood = tds <= 500 && ph >= 6.5 && ph <= 8.5 && turb <= 5 && temp >= 10 && temp <= 30;
         let cleanGood = tds <= 1000 && ph >= 6 && ph <= 9 && turb <= 50 && temp >= 10 && temp <= 40;
         let agriGood = tds <= 2000 && ph >= 6 && ph <= 8.5 && turb <= 100 && temp >= 5 && temp <= 45;
@@ -326,8 +532,11 @@
       }
     }
 
-    fetchData();
-    setInterval(fetchData, 10000);
+    // Initially show the login form
+    showAuthForm('login');
+
+    // The interval for fetching data will be started after successful login
+    // The interval ID is stored in `fetchInterval` so it can be cleared on logout
   </script>
 </body>
 </html>
